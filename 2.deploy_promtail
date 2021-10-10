@@ -1,0 +1,21 @@
+/ansible/hosts文件:
+[promtail]
+10.2.0.[1:5]
+
+/ansible/deploy.yaml文件:
+---
+- hosts: promtail
+  tasks:
+  - name: install promtail
+    shell: wget [promtail压缩文件] && unzip [promtail压缩文件] && chmod +x [promtail解压文件]
+  - name: edit promtail config and service 
+    shell: echo '[promtail服务配置]' > /etc/promtail/server.conf && echo '[systemd服务配置]' > /lib/systemd/system/promtail.service
+  - name: auto startup
+    systemd:
+      name: promtail
+      state: started
+      enabled: True
+      daemon_reload: yes
+    
+docker运行命令:
+docker run [ansible容器镜像] -i /ansible/hosts /ansible/deploy.yaml
