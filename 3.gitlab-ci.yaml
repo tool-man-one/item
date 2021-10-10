@@ -1,0 +1,17 @@
+  stages:
+  - build
+  - push
+  
+  image-build:
+    stage: build
+    only:
+    - master
+    script:  
+      - docker build -t [镜像地址] .
+  image-push:
+    stage: upload
+    only:
+    - master
+    script:
+      - docker push [镜像地址] 
+    
