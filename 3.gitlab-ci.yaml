@@ -2,16 +2,25 @@
   - build
   - push
   
+  variables:
+  CONTAINER_IMAGE: registry.cn-hangzhou.aliyuncs.com:qiaozhuangzhuang-${CI_COMMIT_SHORT_SHA}
+  
   image-build:
+    image: docker
     stage: build
     only:
     - master
-    script:  
-      - docker build -t [镜像地址] .
+    script:
+      - apk update && apk add git
+      - git clone https://github.com/moleculerjs/moleculer-examples.git
+      - cd moleculer-examples/blog
+      - docker build -t ${CONTAINER_IMAGE} .
   image-push:
-    stage: upload
+    stage: push
     only:
     - master
+    before_script:
+      - docker login -u xiaoyu-dev -p YMaFmi8u
     script:
-      - docker push [镜像地址] 
+      - docker push ${CONTAINER_IMAGE}
     
